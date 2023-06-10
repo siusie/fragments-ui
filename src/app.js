@@ -1,13 +1,23 @@
 // src/app.js
 
 import { Auth, getUser } from './auth';
-import { getUserFragments } from './api';
+import { createFragment, getUserFragments } from './api';
+
 
 async function init() {
   // Get our UI elements
   const userSection = document.querySelector('#user');
   const loginBtn = document.querySelector('#login');
   const logoutBtn = document.querySelector('#logout');
+  const form = document.querySelector('#form');
+
+  // for POSTing a new fragment
+  async function onSubmit(event) {
+  event.preventDefault();
+  var data = document.getElementById('data').value;
+  console.log(`Form Submitted! Got input: ${data}`);
+    await createFragment(user, data);
+  }
 
   // Wire up event handlers to deal with login and logout.
   loginBtn.onclick = () => {
@@ -35,6 +45,8 @@ async function init() {
   // Update the UI to welcome the user
   userSection.hidden = false;
 
+  form.hidden = false;
+
   // Show the user's username
   userSection.querySelector('.username').innerText = user.username;
 
@@ -43,6 +55,9 @@ async function init() {
 
   // Do an authenticated request to the fragments API server and log the result
   getUserFragments(user);
+  
+  // Listen for the form submit
+  form.addEventListener("submit", onSubmit);
 }
 
 // Wait for the DOM to be ready, then start the app
