@@ -11,7 +11,7 @@ async function init() {
   const logoutBtn = document.querySelector('#logout');
   const form = document.querySelector('#form');
 
-  // for POSTing a new fragment
+  // event handler for creating a new fragment
   async function onSubmit(event) {
   event.preventDefault();
   var data = document.getElementById('data').value;
