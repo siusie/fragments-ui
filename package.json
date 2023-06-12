@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel",
-    "build": "parcel build"
+    "build": "parcel build",
+    "lint": "eslint --config .eslintrc.js src/**"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "buffer": "^5.7.1",
+    "eslint": "^8.42.0",
     "parcel": "^2.8.3",
     "process": "^0.11.10",
     "punycode": "^1.4.1",
