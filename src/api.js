@@ -25,11 +25,8 @@ export async function getUserFragments(user) {
   }
 }
 
-export async function createFragment(user, fragmentData) {
-  // console.log(`user.authorizationHeaders(): ${JSON.stringify(user.authorizationHeaders(), null, 4)}`);
-  
+export async function createFragment(user, fragmentData) {  
   try {
-    // console.log(`POST: ${apiUrl}/v1/fragments`);
     const res = await fetch(`${apiUrl}/v1/fragments`, {
       method: "POST",
       headers: {
@@ -45,6 +42,5 @@ export async function createFragment(user, fragmentData) {
   }  
   } catch (err) {
     console.error('Unable to call POST /v1/fragment', { err });    
-  }
-  
+  }  
 }
