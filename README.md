@@ -13,3 +13,5 @@ The tokens allow us to access our own resources (i.e., the `fragments` microserv
 [Reference](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
 A Docker image consists of read-only layers each of which represents a Dockerfile instruction. The layers are stacked and each one is a delta of the changes from the previous layer. When you run an image and generate a container, you add a new writable layer, also called the container layer, on top of the underlying layers. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this writable container layer.
+
+Dockerfile --> Image --> Container
