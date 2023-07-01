@@ -3,11 +3,14 @@ module.exports = {
     node: true,
     commonjs: true,
     es2021: true,
+    browser: true
   },
   extends: 'eslint:recommended',
   overrides: [],
   parserOptions: {
-      ecmaVersion: 'latest',
+    ecmaVersion: 'latest',
+    sourceType: 'module'
   },
+  ignorePatterns: ['**/src/*.html'],
   rules: {},
 };
