@@ -8,6 +8,12 @@ The tokens allow us to access our own resources (i.e., the `fragments` microserv
 2. access token: can be JWT (which has data embedded in it) or a random string of characters. (_Because I have this, I'm allowed to do what I'm asking to do_)
 3. refresh token: within a certain time frame, can be exchanged for a new set of tokens without having to go through the authentication process again
 
+The `fragments` microservice consists of:
+
+- Amazon Cognito User Pool
+- simple client Web App that authenticates and gets tokens
+- microservice that can secure HTTP access via JWT tokens
+
 ## Getting started with Docker
 
 [Reference](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
