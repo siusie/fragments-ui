@@ -1,7 +1,7 @@
 // src/api.js
 
 // fragments microservice API, defaults to localhost:8080
-const apiUrl = process.env.API_URL;
+const apiUrl = process.env.API_URL || 'http://localhost:8080';
 
 /**
  * Given an authenticated user, request all fragments for this user from the
@@ -25,12 +25,12 @@ export async function getUserFragments(user) {
   }
 }
 
-export async function createFragment(user, fragmentData) {  
+export async function createFragment(user, fragmentData, contentType) {  
   try {
     const res = await fetch(`${apiUrl}/v1/fragments`, {
       method: "POST",
       headers: {
-        "Content-Type": "text/plain",
+        "Content-Type": contentType,
         "Authorization": user.authorizationHeaders().Authorization,
       },
       body: fragmentData,
