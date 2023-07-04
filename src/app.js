@@ -3,7 +3,6 @@
 import { Auth, getUser } from './auth';
 import { createFragment, getUserFragments } from './api';
 
-
 async function init() {
   // Get our UI elements
   const userSection = document.querySelector('#user');
@@ -13,10 +12,11 @@ async function init() {
 
   // event handler for creating a new fragment
   async function onSubmit(event) {
-  event.preventDefault();
-  var data = document.getElementById('data').value;
-  console.log(`Form Submitted! Got input: ${data}`);
-    await createFragment(user, data);
+    event.preventDefault();
+    const data = document.getElementById('data').value;
+    const type = document.getElementById('types').value;
+    await createFragment(user, data, type);
+    console.log(`Form Submitted! Got input: ${data}, content type: ${type}`);    
   }
 
   // Wire up event handlers to deal with login and logout.
