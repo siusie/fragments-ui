@@ -15,14 +15,22 @@
     </section>
     <section hidden id="user">
         <h2>Hello <span class="username"></span>!</h2>
-    </section> <br>
-    <section>
         <form hidden id="form">
             <hr>
-            <label>Create a text fragment: <input type="text" id="data" /></label>
+            <label>To create a fragment, type its content into the textbox:</label>
+            <textarea id="data" required></textarea>
             <br />
-            <button type="submit">Create</button>
+            <br />
+            <label>Choose a fragment type:</label>
+            <select name="file-types" id="types">
+                <option value="text/plain">text/plain</option>
+                <option value="text/html">text/html</option>
+                <option value="text/markdown">text/markdown</option>
+                <option value="application/json">application/json</option>
+            </select>
+            <br /><br />
+            <button type="submit">Create</button> <br />
         </form>
-    </section>
+    </section> <br />
 </body>
 </html>
