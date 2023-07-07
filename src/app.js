@@ -1,7 +1,7 @@
 // src/app.js
 
 import { Auth, getUser } from './auth';
-import { createFragment, getUserFragments } from './api';
+import { createFragment, getUserFragments, getUserFragmentInfo } from './api';
 
 async function init() {
   // Get our UI elements
@@ -9,14 +9,23 @@ async function init() {
   const loginBtn = document.querySelector('#login');
   const logoutBtn = document.querySelector('#logout');
   const form = document.querySelector('#form');
+  const success = document.querySelector('#success');
+  const fragmentsBtn = document.querySelector('#fragments');
+  const showFragments = document.querySelector('#show-fragments');
+  const create = document.querySelector('#create');
 
   // event handler for creating a new fragment
   async function onSubmit(event) {
     event.preventDefault();
     const data = document.getElementById('data').value;
     const type = document.getElementById('types').value;
-    await createFragment(user, data, type);
-    console.log(`Form Submitted! Got input: ${data}, content type: ${type}`);    
+    const res = await createFragment(user, data, type);
+    success.hidden = false;
+    if (!(res instanceof Error)) {
+      return success.innerText = `Fragment created!\n\nFragment ID: ${res.data.fragment.id}\nURL: ${(res.location)}\ntype: ${res.data.fragment.type}\nsize: ${res.data.fragment.size}`;      
+
+    }
+    return success.innerText = res;
   }
 
   // Wire up event handlers to deal with login and logout.
@@ -36,6 +45,7 @@ async function init() {
   if (!user) {
     // Disable the Logout button
     logoutBtn.disabled = true;
+    fragmentsBtn.disabled = true;
     return;
   }
 
@@ -57,7 +67,31 @@ async function init() {
   getUserFragments(user);
   
   // Listen for the form submit
-  form.addEventListener("submit", onSubmit);
+  form.addEventListener("submit", onSubmit);  
+
+  // Show a list of fragment metadata when the 'Fragments' button is clicked
+  fragmentsBtn.onclick = async () => {
+    showFragments.querySelector('.all').innerText = "";
+    const metadata = await getUserFragmentInfo(user);
+    form.hidden = true;
+    showFragments.hidden = false;
+    console.info(`length of object: ${(metadata.fragments.length)}`)
+    if (!metadata.fragments.length) {
+      return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img>';
+    }
+    let test = metadata.fragments;
+    let counter = 1;
+    
+    test.forEach(frag => {
+      showFragments.querySelector('.all').innerText += `Fragment ${counter}\nID: ${frag.id}\nOwner ID: ${frag.ownerId}\nCreated at: ${frag.created}\nUpdated at: ${frag.updated}\nType: ${frag.type}\nSize: ${frag.size}\n\n`;
+      counter++;
+    });
+  };
+
+  create.onclick = () => { 
+    form.hidden = false;
+    showFragments.hidden = true;
+  };
 }
 
 // Wait for the DOM to be ready, then start the app
