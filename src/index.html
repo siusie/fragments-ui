@@ -11,7 +11,7 @@
 <body>
     <h1>Fragments UI</h1>
     <section>
-        <nav><button id="login">Login</button> <button id="logout">Logout</button></nav>
+        <nav><button id="login">Login</button> <button id="logout">Logout</button> <button id="fragments">Fragments</button></nav>
     </section>
     <section hidden id="user">
         <h2>Hello <span class="username"></span>!</h2>
@@ -19,8 +19,7 @@
             <hr>
             <label>To create a fragment, type its content into the textbox:</label>
             <textarea id="data" required></textarea>
-            <br />
-            <br />
+            <br /><br />
             <label>Choose a fragment type:</label>
             <select name="file-types" id="types">
                 <option value="text/plain">text/plain</option>
@@ -29,8 +28,14 @@
                 <option value="application/json">application/json</option>
             </select>
             <br /><br />
-            <button type="submit">Create</button> <br />
-        </form>
+            <button type="submit">Create</button>
+            <br /><br />
+            <section hidden id="success"></section>
+        </form> <br />
+        <section hidden id="show-fragments"><hr>
+            <span class="all"></span><br />
+            <button id="create">Create</button>
+        </section>
     </section> <br />
 </body>
 </html>
