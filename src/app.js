@@ -75,9 +75,8 @@ async function init() {
     const metadata = await getUserFragmentInfo(user);
     form.hidden = true;
     showFragments.hidden = false;
-    console.info(`length of object: ${(metadata.fragments.length)}`)
     if (!metadata.fragments.length) {
-      return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img>';
+      return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img><br />';
     }
     let test = metadata.fragments;
     let counter = 1;
