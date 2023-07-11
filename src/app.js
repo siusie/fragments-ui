@@ -39,6 +39,28 @@ async function init() {
     // https://docs.amplify.aws/lib/auth/emailpassword/q/platform/js/#sign-out
     Auth.signOut();
   };
+  // Show a list of fragment metadata when the 'Fragments' button is clicked
+  fragmentsBtn.onclick = async () => {
+    showFragments.querySelector('.all').innerText = "";
+    const metadata = await getUserFragmentInfo(user);
+    form.hidden = true;
+    showFragments.hidden = false;
+    if (!metadata.fragments.length) {
+      return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img>';
+    }
+    // let test = metadata.fragments;
+    let counter = 1;
+    
+    metadata.fragments.forEach(frag => {
+      showFragments.querySelector('.all').innerText += `Fragment ${counter}\nID: ${frag.id}\nOwner ID: ${frag.ownerId}\nCreated at: ${frag.created}\nUpdated at: ${frag.updated}\nType: ${frag.type}\nSize: ${frag.size}\n\n`;
+      counter++;
+    });
+  };
+  // Display the 'create fragment' form when the 'Create' button is clicked, and hide the current list of fragments
+  create.onclick = () => { 
+    form.hidden = false;
+    showFragments.hidden = true;
+  };
 
   // See if we're signed in (i.e., we'll have a `user` object)
   const user = await getUser();
@@ -67,30 +89,7 @@ async function init() {
   getUserFragments(user);
   
   // Listen for the form submit
-  form.addEventListener("submit", onSubmit);  
-
-  // Show a list of fragment metadata when the 'Fragments' button is clicked
-  fragmentsBtn.onclick = async () => {
-    showFragments.querySelector('.all').innerText = "";
-    const metadata = await getUserFragmentInfo(user);
-    form.hidden = true;
-    showFragments.hidden = false;
-    if (!metadata.fragments.length) {
-      return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img><br />';
-    }
-    let test = metadata.fragments;
-    let counter = 1;
-    
-    test.forEach(frag => {
-      showFragments.querySelector('.all').innerText += `Fragment ${counter}\nID: ${frag.id}\nOwner ID: ${frag.ownerId}\nCreated at: ${frag.created}\nUpdated at: ${frag.updated}\nType: ${frag.type}\nSize: ${frag.size}\n\n`;
-      counter++;
-    });
-  };
-
-  create.onclick = () => { 
-    form.hidden = false;
-    showFragments.hidden = true;
-  };
+  form.addEventListener("submit", onSubmit);    
 }
 
 // Wait for the DOM to be ready, then start the app
