@@ -22,8 +22,7 @@ async function init() {
     const res = await createFragment(user, data, type);
     success.hidden = false;
     if (!(res instanceof Error)) {
-      return success.innerText = `Fragment created!\n\nFragment ID: ${res.data.fragment.id}\nURL: ${(res.location)}\ntype: ${res.data.fragment.type}\nsize: ${res.data.fragment.size}`;      
-
+      return success.innerText = `Fragment created!\n\nFragment ID: ${res.data.fragment.id}\nURL: ${(res.location)}\ntype: ${res.data.fragment.type}\nsize: ${res.data.fragment.size}`;
     }
     return success.innerText = res;
   }
