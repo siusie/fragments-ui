@@ -23,3 +23,18 @@ The `fragments` microservice consists of:
 A Docker image consists of read-only layers each of which represents a Dockerfile instruction. The layers are stacked and each one is a delta of the changes from the previous layer. When you run an image and generate a container, you add a new writable layer, also called the container layer, on top of the underlying layers. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this writable container layer.
 
 Dockerfile --> Image --> Container
+
+## Deploying containers to AWS
+
+When an application is containerized, it requires a container orchestration platform to automate the scheduling (i.e., deployment, running, updates) of your containers on servers, manage the network, restart or scale instances, handle versions and deployments, etc. Container orchestration platforms include Kubernetes and Amazon ECS.
+
+Docker images are automatically deployed to Amazon ECS using git, GitHub and GitHub Actions. Amazon ECS is a fully managed container orchestration service, allowing us to
+
+- deploy our images to run as containers
+- provision cloud compute, network, storage, and other resources
+- manage these containers (e.g., restarting crashed containers)
+- scale the number of containers running at any given moment based on load
+- monitor our containers
+- manage updates (deployments)
+
+Both ECS and EKS are often referred to as a "control plane," since they sit on top of, and manage, server instances for us: in order to run container workloads, we need to provision and manage cloud instances. ECS can use EC2 instances directly (i.e., self-managed) or via the serverless Fargate platform (i.e., fully managed). With Fargate we don't have to work directly with the VM or OS. We use Fargate in conjunction with container orchestration platforms (ECS or EKS) to manage the server resources necessary to run our containers. With Fargate, we don't need to provision, manage, secure, scale, or interact directly with our compute tier--no more manual EC2 setup!
