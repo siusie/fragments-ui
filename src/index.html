@@ -6,19 +6,20 @@
     <title>Fragments UI</title>
     <link rel="stylesheet" href="https://unpkg.com/bamboo.css" />
     <script type="module" src="./app.js"></script>
+    <!-- <script src="test.js"></script> -->
 </head>
 
 <body>
     <h1>Fragments UI</h1>
     <section>
-        <nav><button id="login">Login</button> <button id="logout">Logout</button> <button id="fragments">Fragments</button></nav>
+        <nav><button id="login">Login</button> <button id="logout">Logout</button> <button id="fragments">Fragments</button> <button id="search">Search</button></nav>
     </section>
     <section hidden id="user">
         <h2>Hello <span class="username"></span>!</h2>
         <form hidden id="form">
             <hr>
             <label>To create a fragment, type its content into the textbox:</label>
-            <textarea id="data" required></textarea>
+            <input type="file" accept="text/plain, .md, text/html, image/png, image/jpeg, image/webp, image/gif, application/json" required>
             <br /><br />
             <label>Choose a fragment type:</label>
             <select name="file-types" id="types">
@@ -26,15 +27,37 @@
                 <option value="text/html">text/html</option>
                 <option value="text/markdown">text/markdown</option>
                 <option value="application/json">application/json</option>
+                <option value="image/png">image/png</option>
+                <option value="image/jpeg">image/jpeg</option>
+                <option value="image/webp">image/webp</option>
+                <option value="image/gif">image/gif</option>
             </select>
             <br /><br />
             <button type="submit">Create</button>
             <br /><br />
-            <section hidden id="success"></section>
+            <section hidden id="success">
+            </section>
         </form> <br />
         <section hidden id="show-fragments"><hr>
             <span class="all"></span><br />
             <button id="create">Create</button>
+        </section>
+        <form hidden id="search-fragments"><hr>
+            <label>Look up a fragment's contents:</label> <br />
+            <input type="text" placeholder="fragment ID" id="url" required> <br /> <br /> <button type="submit">Search</button> <br /> <br />     
+        </form>
+
+        <section hidden id="result"></section> <br />
+        <form hidden id="edit-form">
+            <input type="file" id="input-file"
+                accept="text/plain, .md, text/html, image/png, image/jpeg, image/webp, image/gif, application/json" required>
+            <br /><br />
+            <button type="submit">Upload</button>
+            <br /> <br />
+        </form>
+        <section hidden id="update-delete">
+            <hr>
+            <button id="edit">Update</button> <button id="delete">Delete</button> <br />
         </section>
     </section> <br />
 </body>
