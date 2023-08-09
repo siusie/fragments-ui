@@ -44,12 +44,25 @@ export async function getUserFragmentInfo(user) {
   }
 }
 
+export async function getFragmentData(user, id) {
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": user.authorizationHeaders().Authorization,
+      }
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    return res;
+  } catch (err) {
+    console.error('Unable to retrieve fragment data', { err });
+  }
+}
+
 export async function createFragment(user, fragmentData, contentType) {  
   try {
-    if (!fragmentData.replace(/\s/g, '').length) {
-      // throw error if the fragment data sent by user contains whitespace (ie. spaces, tabs or line breaks)
-      throw new Error('A fragment\'s content can\'t be empty!');
-    }
     const res = await fetch(`${apiUrl}/v1/fragments`, {
       method: "POST",
       headers: {
@@ -66,4 +79,41 @@ export async function createFragment(user, fragmentData, contentType) {
     console.error('Unable to call POST /v1/fragment', { err });
     return err;
   }  
+}
+
+export async function updateFragmentData(user, id, fragmentData) {
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": user.authorizationHeaders().Authorization,
+      },
+      body: fragmentData,
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    return {status: res.status};
+  } catch (err) {
+    console.error('Unable to update fragment', { err });
+    return err;
+  }
+}
+
+export async function deleteFragment(user, id) {
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": user.authorizationHeaders().Authorization,
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (err) {
+    console.error('Unable to delete fragment', { err });
+    return err;
+  }
 }
