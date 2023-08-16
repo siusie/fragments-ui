@@ -44,7 +44,7 @@ async function init() {
     if (!(res instanceof Error)) {
       return success.innerText = `Fragment created!\n\nFragment ID: ${res.data.fragment.id}\nFragment type: ${res.data.fragment.type}\nFragment size: ${res.data.fragment.size} bytes`;
     }
-    return success.innerText = res;
+    return success.innerText = `Unable to create fragment. Please ensure that the file is not empty and the selected type matches the extension. [${res}]`;
   }
 
   // Event handler for searching a fragment
@@ -60,22 +60,23 @@ async function init() {
       const fragmentData = await getFragmentData(user, searchInput.value);
       document.querySelector('#result').hidden = false;
 
-    // console.log(`the response: ${await fragmentData.text()}`)
-    // If the requested fragment is an image, `fragmentData` will contain an URI
-    const response = (await (fragmentData.text())).split('"');
-    // console.log('split: ', response);
+      // console.log(`the response: ${await fragmentData.text()}`)
+      // If the requested fragment is an image, `fragmentData` will contain an URI
+      const response = (await (fragmentData.text())).split('"');
+      // console.log('split: ', response);
 
-    if (response.includes('dataURL')) {
+      if (response.includes('dataURL')) {
+        document.querySelector('#update-delete').hidden = false;
+        const dataUrlIndex = response.length - 2;
+        // console.log(`data URL: ${response[dataUrlIndex]}, ${dataUrlIndex}}`)
+        return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
+      }
+      console.log(`the response: ${response}`)
+      // If retrieving a non-image fragment's contents, `response` will be an array with 1 element:
+      // the fragment's data
       document.querySelector('#update-delete').hidden = false;
-      const dataUrlIndex = response.length - 2;
-      // console.log(`data URL: ${response[dataUrlIndex]}, ${dataUrlIndex}}`)
-      return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
-    }
-    console.log(`the response: ${response}`)
-    // If retrieving a non-image fragment's contents, `response` will be an array with 1 element:
-    // the fragment's data
-      document.querySelector('#update-delete').hidden = false;
-      return document.querySelector('#result').innerText = response;
+      document.querySelector('#edit-form').hidden = true;
+      return document.querySelector('#result').innerText = response.join('"');
     }
     catch(err)    
     {
@@ -84,7 +85,8 @@ async function init() {
       document.querySelector('#update-delete').hidden = true;
     
       // For any errors thrown during the GET operation
-      return document.querySelector('#result').innerText = 'Fragment does not exist. The fragment ID or extension may be invalid.';
+      document.querySelector('#edit-form').hidden = true;
+      return document.querySelector('#result').innerText = 'Error retrieving fragment. It may not exist, or the ID/extension may be invalid.';
     }
   }
 
@@ -158,12 +160,18 @@ async function init() {
     // Updating a fragment's contents successfully will result in a 'fragment' object in response
     if (await res.status === 200) {
       // Make another call to getFragmentData to retrieve the updated contents
-      const fragmentData = await getFragmentData(user, searchInput.value);
+      const fragmentData = await getFragmentData(user, searchInput.value);  //TODO: remove 'await'
       const response = (await (fragmentData.text())).split('"');
-      const dataUrlIndex = response.length - 2;
-      return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
+      if (response.includes('dataURL')) {
+        const dataUrlIndex = response.length - 2;
+        return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
+      }
+      console.log(`the response from update: ${response}`)
+
+      return document.querySelector('#result').innerText = response.join('"');
     }
-    return document.querySelector('#result').innerText = 'Unable to update fragment';
+    
+    return document.querySelector('#result').innerText = 'Unable to update fragment. Please ensure that the file is not empty and that the content-types match.';
   }
 
   // Pressing the 'Delete' button
@@ -175,13 +183,13 @@ async function init() {
     const res = await deleteFragment(user, searchInput.value);
     if (res.status !== 'error')
     {
-      console.log(`the response: ${Object.keys(res)}, ${searchInput.value}`);
+      console.log(`the response: ${JSON.stringify(res, null, 4)}, ${searchInput.value}`);
       deleteBtn.disabled = true;
       editBtn.disabled = true;
       document.querySelector('#edit-form').hidden = true;
-      return document.querySelector('#result').innerText = "Fragment deleted"
+      return document.querySelector('#result').innerText = 'Fragment deleted.'
     }
-    return document.querySelector('#result').innerText = 'Invalid URL';    
+    return document.querySelector('#result').innerText = 'Error deleting fragment.';    
   };
 
 
