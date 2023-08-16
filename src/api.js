@@ -53,11 +53,12 @@ export async function getFragmentData(user, id) {
       }
     });
     if (!res.ok) {
-      throw new Error(`${res.status} ${res.statusText}`);
+      throw new Error(`${res.status}`);
     }
     return res;
   } catch (err) {
     console.error('Unable to retrieve fragment data', { err });
+    return err;
   }
 }
 
@@ -72,7 +73,7 @@ export async function createFragment(user, fragmentData, contentType) {
       body: fragmentData,
     });
     if (!res.ok) {
-      throw new Error(`${res.status} ${res.statusText}`);
+      throw new Error(`${res.status}`);
     }
     return { location: res.headers.get("Location"), data: await res.json() };
   } catch (err) {
