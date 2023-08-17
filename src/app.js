@@ -1,7 +1,7 @@
 // src/app.js
 
 import { Auth, getUser } from './auth';
-import { createFragment, getUserFragments, getUserFragmentInfo, getFragmentData, updateFragmentData, deleteFragment } from './api';
+import { createFragment, getUserFragmentInfo, getFragmentData, updateFragmentData, deleteFragment } from './api';
 
 async function init() {
   // Get our UI elements
@@ -60,18 +60,15 @@ async function init() {
       const fragmentData = await getFragmentData(user, searchInput.value);
       document.querySelector('#result').hidden = false;
 
-      // console.log(`the response: ${await fragmentData.text()}`)
       // If the requested fragment is an image, `fragmentData` will contain an URI
       const response = (await (fragmentData.text())).split('"');
-      // console.log('split: ', response);
 
       if (response.includes('dataURL')) {
         document.querySelector('#update-delete').hidden = false;
         const dataUrlIndex = response.length - 2;
-        // console.log(`data URL: ${response[dataUrlIndex]}, ${dataUrlIndex}}`)
         return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
       }
-      console.log(`the response: ${response}`)
+
       // If retrieving a non-image fragment's contents, `response` will be an array with 1 element:
       // the fragment's data
       document.querySelector('#update-delete').hidden = false;
@@ -83,7 +80,7 @@ async function init() {
       // Clear the previously submitted URL; now ready for the next 'submit' event
       searchInput.value = "";
       document.querySelector('#update-delete').hidden = true;
-    
+
       // For any errors thrown during the GET operation
       document.querySelector('#edit-form').hidden = true;
       return document.querySelector('#result').innerText = 'Error retrieving fragment. It may not exist, or the ID/extension may be invalid.';
@@ -113,18 +110,27 @@ async function init() {
     document.querySelector('#update-delete').hidden = true;
     document.querySelector('#edit-form').hidden = true;
     showFragments.querySelector('.all').innerText = "";
+    
     const metadata = await getUserFragmentInfo(user);
     form.hidden = true;
-    if (!metadata.fragments.length) {
-      return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img>';
+
+    if (metadata.status === 'ok')
+    {
+      // The returned array is empty -> display appropriate message
+      if (!metadata.fragments.length) {
+        return showFragments.querySelector('.all').innerHTML = '<img src="https://media.tumblr.com/tumblr_m1dmtxl6MX1qzzgvbo1_400.gif" alt="tumbleweed"></img>';
+      }
+
+      // Otherwise, display each fragment and its metadata, making sure to number each
+      let counter = 1;
+      
+      metadata.fragments.forEach(frag => {
+        showFragments.querySelector('.all').innerText += `Fragment ${counter}\nID: ${frag.id}\nOwner ID: ${frag.ownerId}\nCreated at: ${frag.created}\nUpdated at: ${frag.updated}\nContent-Type: ${frag.type}\nSize: ${frag.size} bytes\n\n`;
+        counter++;
+      });
+      return;
     }
-    let counter = 1;
-    
-    // Display each fragment and its metadata, making sure to number each
-    metadata.fragments.forEach(frag => {
-      showFragments.querySelector('.all').innerText += `Fragment ${counter}\nID: ${frag.id}\nOwner ID: ${frag.ownerId}\nCreated at: ${frag.created}\nUpdated at: ${frag.updated}\nContent-Type: ${frag.type}\nSize: ${frag.size} bytes\n\n`;
-      counter++;
-    });
+    return showFragments.querySelector('.all').innerText = 'Unable to retrieve fragments.\n'
   };
 
   // Display the 'create fragment' form when the 'Create' button is clicked, and hide the current list of fragments
@@ -166,12 +172,11 @@ async function init() {
         const dataUrlIndex = response.length - 2;
         return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
       }
-      console.log(`the response from update: ${response}`)
 
       return document.querySelector('#result').innerText = response.join('"');
     }
     
-    return document.querySelector('#result').innerText = 'Unable to update fragment. Please ensure that the file is not empty and that the content-types match.';
+    return document.querySelector('#result').innerText = 'Unable to update fragment. Please ensure that the file is not empty and that the content-types match.\n';
   }
 
   // Pressing the 'Delete' button
@@ -183,13 +188,12 @@ async function init() {
     const res = await deleteFragment(user, searchInput.value);
     if (res.status !== 'error')
     {
-      console.log(`the response: ${JSON.stringify(res, null, 4)}, ${searchInput.value}`);
       deleteBtn.disabled = true;
       editBtn.disabled = true;
       document.querySelector('#edit-form').hidden = true;
       return document.querySelector('#result').innerText = 'Fragment deleted.'
     }
-    return document.querySelector('#result').innerText = 'Error deleting fragment.';    
+    return document.querySelector('#result').innerText = 'Error deleting fragment.\n';    
   };
 
 
@@ -203,9 +207,6 @@ async function init() {
     return;
   }
 
-  // Log the user info for debugging purposes
-  console.log({ user });
-
   // Update the UI to welcome the user
   userSection.hidden = false;
 
@@ -218,7 +219,7 @@ async function init() {
   loginBtn.disabled = true;
 
   // Do an authenticated request to the fragments API server and log the result
-  getUserFragments(user);
+  // getUserFragments(user);
   
   // Listen for the form submit
   form.addEventListener("submit", onSubmit);    

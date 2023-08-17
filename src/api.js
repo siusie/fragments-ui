@@ -5,8 +5,8 @@ const apiUrl = process.env.API_URL || 'http://localhost:8080';
 
 /**
  * Given an authenticated user, request all fragments for this user from the
- * fragments microservice (currently only running locally). We expect a user
- * to have an `idToken` attached, so we can send that along with the request.
+ * fragments microservice. We expect a user to have an `idToken` attached,
+ * so we can send that along with the request.
  */
 export async function getUserFragments(user) {
   console.log(`Requesting user fragments data from ${apiUrl}/v1/fragments`);
@@ -19,10 +19,9 @@ export async function getUserFragments(user) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
     const data = await res.json();
-    console.log('Got user fragments data', { data });
     return data;
   } catch (err) {
-    console.error('Unable to call GET /v1/fragment', { err });
+    return err;
   }
 }
 
@@ -40,7 +39,7 @@ export async function getUserFragmentInfo(user) {
     }
     return res.json();
   } catch (err) {
-    console.error('Unable to call GET /v1/fragment', { err });
+    return err;
   }
 }
 
@@ -57,7 +56,6 @@ export async function getFragmentData(user, id) {
     }
     return res;
   } catch (err) {
-    console.error('Unable to retrieve fragment data', { err });
     return err;
   }
 }
@@ -77,7 +75,6 @@ export async function createFragment(user, fragmentData, contentType) {
     }
     return { location: res.headers.get("Location"), data: await res.json() };
   } catch (err) {
-    console.error('Unable to call POST /v1/fragment', { err });
     return err;
   }  
 }
@@ -96,7 +93,6 @@ export async function updateFragmentData(user, id, fragmentData) {
     }
     return {status: res.status};
   } catch (err) {
-    console.error('Unable to update fragment', { err });
     return err;
   }
 }
@@ -114,7 +110,6 @@ export async function deleteFragment(user, id) {
     }
     return await res.json();
   } catch (err) {
-    console.error('Unable to delete fragment', { err });
     return err;
   }
 }
