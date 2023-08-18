@@ -3,6 +3,26 @@
 import { Auth, getUser } from './auth';
 import { createFragment, getUserFragmentInfo, getFragmentData, updateFragmentData, deleteFragment } from './api';
 
+const getContentType = (extension) => {
+  switch (extension.toLowerCase()) {
+    case 'md':
+      return 'text/markdown';
+    case 'html':
+      return 'text/html';
+    case 'txt':
+      return 'text/plain';
+    case 'json':
+      return 'application/json';
+    case 'png':
+      return 'image/png';
+    case 'jpg':
+      return 'image/jpeg';
+    case 'webp':
+      return 'image/webp';
+    case 'gif':
+      return 'image/gif';
+}}
+
 async function init() {
   // Get our UI elements
   const userSection = document.querySelector('#user');
@@ -40,7 +60,8 @@ async function init() {
       return success.innerText = `Please select the correct media type associated with this file.`
     }
     
-    res = await createFragment(user, document.querySelector('input').files[0], type);
+    else res = await createFragment(user, document.querySelector('input').files[0], type);
+
     if (!(res instanceof Error)) {
       return success.innerText = `Fragment created!\n\nFragment ID: ${res.data.fragment.id}\nFragment type: ${res.data.fragment.type}\nFragment size: ${res.data.fragment.size} bytes`;
     }
@@ -65,6 +86,8 @@ async function init() {
 
       if (response.includes('dataURL')) {
         document.querySelector('#update-delete').hidden = false;
+        editBtn.disabled = false;
+        deleteBtn.disabled = false;
         const dataUrlIndex = response.length - 2;
         return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;
       }
@@ -73,6 +96,8 @@ async function init() {
       // the fragment's data
       document.querySelector('#update-delete').hidden = false;
       document.querySelector('#edit-form').hidden = true;
+      editBtn.disabled = false;
+      deleteBtn.disabled = false;
       return document.querySelector('#result').innerText = response.join('"');
     }
     catch(err)    
@@ -161,13 +186,23 @@ async function init() {
   // Editing a fragment's content
   async function requestUpdate(event) { 
     event.preventDefault();
-    const res = await updateFragmentData(user, searchInput.value, document.querySelector('#input-file').files[0]);
+
+    // Need to get the file extension because the '.md' isn't being read as 'text/markdown', causing
+    // the content-type header to not be set properly in the PUT request. 
+    // The fix (for now): explicitly set the content type and pass it to updateFragmentData
+    const extension = (document.querySelector('#input-file').files[0].name).split('.')[1];  // get file extension
+    const contentType = getContentType(extension);
+      
+    const res = await updateFragmentData(user, searchInput.value, document.querySelector('#input-file').files[0], contentType);
 
     // Updating a fragment's contents successfully will result in a 'fragment' object in response
     if (await res.status === 200) {
       // Make another call to getFragmentData to retrieve the updated contents
-      const fragmentData = await getFragmentData(user, searchInput.value);  //TODO: remove 'await'
+      const fragmentData = await getFragmentData(user, searchInput.value);
       const response = (await (fragmentData.text())).split('"');
+      editBtn.disabled = false;
+      deleteBtn.disabled = false;
+      
       if (response.includes('dataURL')) {
         const dataUrlIndex = response.length - 2;
         return document.querySelector('#result').innerHTML = `<img src="${response[dataUrlIndex]}">`;

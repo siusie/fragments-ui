@@ -79,11 +79,12 @@ export async function createFragment(user, fragmentData, contentType) {
   }  
 }
 
-export async function updateFragmentData(user, id, fragmentData) {
+export async function updateFragmentData(user, id, fragmentData, contentType) {
   try {
     const res = await fetch(`${apiUrl}/v1/fragments/${id}`, {
       method: "PUT",
       headers: {
+        "Content-Type" : contentType ? contentType : '',
         "Authorization": user.authorizationHeaders().Authorization,
       },
       body: fragmentData,
