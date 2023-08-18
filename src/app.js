@@ -74,7 +74,7 @@ async function init() {
     if (!searchInput.value.toString().replace(/\s/g, '').length)
     {
      document.querySelector('#result').hidden = false;
-     return document.querySelector('#result').innerText = 'Invalid URL';
+     return document.querySelector('#result').innerText = 'INVALID_FRAGMENT_ID';
     }
     try
     {
