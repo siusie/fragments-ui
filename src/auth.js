@@ -1,4 +1,5 @@
 // src/auth.js
+// This file is for OAuth2 Authorization Code Grant. With it, we can make API calls to the fragments server.
 
 import { Amplify, Auth } from 'aws-amplify';
 
@@ -46,6 +47,10 @@ async function getUser() {
     // Get the user's username
     const username = currentAuthenticatedUser.username;
 
+    // Get the user's name
+    const name = currentAuthenticatedUser.name;
+    console.log(`the username is ${username} and the name is ${currentAuthenticatedUser.email}`);
+
     // If that didn't throw, we have a user object, and the user is authenticated
     console.log('The user is authenticated', username);
 
@@ -58,6 +63,7 @@ async function getUser() {
     // Return a simplified "user" object
     return {
       username,
+      name,
       idToken,
       accessToken,
       // Include a simple method to generate headers with our Authorization info
