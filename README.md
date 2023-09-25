@@ -9,3 +9,7 @@ The tokens allow us to access our own resources (i.e., the `fragments` microserv
 3. refresh token: within a certain time frame, can be exchanged for a new set of tokens without having to go through the authentication process again
 
 The [aws-amplify JavaScript SDK](https://www.npmjs.com/package/aws-amplify) connects the web app to Cognito User Pool and Hosted UI.
+
+# Running this web app
+
+Pull the Docker image from [Docker Hub](https://hub.docker.com/repository/docker/siusie/fragments-ui).
