@@ -49,7 +49,6 @@ async function getUser() {
 
     // Get the user's name
     const name = currentAuthenticatedUser.name;
-    console.log(`the username is ${username} and the name is ${currentAuthenticatedUser.email}`);
 
     // If that didn't throw, we have a user object, and the user is authenticated
     console.log('The user is authenticated', username);
