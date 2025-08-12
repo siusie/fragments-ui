@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/siusie/fragments-ui.git"
   },
-  "author": "Xi Chen <xchen339@myseneca.ca>",
+  "author": "SC",
   "license": "UNLICENSED",
   "devDependencies": {
     "buffer": "^5.7.1",
